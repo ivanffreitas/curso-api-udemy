@@ -1,5 +1,6 @@
 package br.com.ivanilson.api;
 
+import br.com.ivanilson.api.domain.User;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
