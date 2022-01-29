@@ -3,6 +3,7 @@ package br.com.ivanilson.api.services.impl;
 import br.com.ivanilson.api.domain.User;
 import br.com.ivanilson.api.domain.dto.UserDTO;
 import br.com.ivanilson.api.repositories.UserRepository;
+import br.com.ivanilson.api.services.exceptions.DataIntegratyViolationException;
 import br.com.ivanilson.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -90,6 +91,7 @@ class UserServiceImplTest {
         assertEquals(PASSWORD, response.get(INDEX).getPassword());
     }
 
+
     @Test
     void whenCreateThenReturnSuccess() {
         when(repository.save(any())).thenReturn(user);
@@ -104,6 +106,19 @@ class UserServiceImplTest {
         assertEquals(EMAIL, response.getEmail());
         assertEquals(PASSWORD, response.getPassword());
 
+    }
+
+    @Test
+    void whenCreateThenReturnAnDataIntegratyViolationException() {
+        when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+
+        try{
+            optionalUser.get().setId(2);
+            service.create(userDTO);
+        }catch (Exception ex){
+            assertEquals(DataIntegratyViolationException.class, ex.getClass());
+            assertEquals("E-mail já cadastrado no sistema", ex.getMessage());
+        }
     }
 
     @Test
